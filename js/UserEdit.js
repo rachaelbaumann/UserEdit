@@ -1,7 +1,7 @@
 var url = "http://localhost8080/Users/";
 
 $().ready(() => { // => is the annonymour funciton... look that up again.
-    $("getuser").click(() => {
+    $("#getuser").click(() => {
         getUserByPrimaryKey($("#userid").val()) //gets id out of input box
     });
     $("#save").click(() => {
@@ -9,40 +9,41 @@ $().ready(() => { // => is the annonymour funciton... look that up again.
     });
 });
 
-function updateUser() {
 
-}
-
-function getUserByPrimaryKey(id) {
-    console.log("getUserByPrimaryKey");
-    $.getJSON(url + "Get/" + id)
-        .then((resp) => {
-            render(resp.data);
-        });
-}
 
 function updateUser() {
-    var id = $("#ID").val();
+    var ID = $("#ID").val();
     var userName = $("#username").val();
     var password = $("#password").val();
-    var firstMame = $("#firstname").val();
+    var firstName = $("#firstname").val();
     var lastName = $("#lastname").val();
     var phone = $("#phone").val();
     var email = $("#email").val();
-    var reviewer = $("#reviewer").val();
-    var admin = $("#admin").val();
+    var isReviewer = $("#reviewer").val();
+    var isAdmin = $("#admin").val();
 
     var user = {// what is in DB : value of key  
-        id: id,
-        userName: username,
+        ID: ID,
+        userName: userName,
         password: password,
-        firstName: firstname,
-        lastName: lastname,
+        firstName: firstName,
+        lastName: lastName,
         phone: phone,
         email: email,
-        reviewer: reviewer,
-        admin: admin
+        isRreviewer: isReviewer,
+        isAdmin: isAdmin
     }
+
+    $.ajax(url+"Change", {
+        data: JSON.stringify(user),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: (resp) => {
+            console.log(resp)
+        },
+        type: 'POST'
+    });
+}
 
     $.post(url + "Change", user)
         .then((resp) => {
@@ -50,14 +51,22 @@ function updateUser() {
         });
 }
 
+function getUserByPrimaryKey(ID) {
+    console.log("getUserByPrimaryKey()");
+    $.getJSON(url + "Get/" + ID)
+        .then((resp) => {
+            render(resp.data);
+        });
+}
+
 function render(user) {
-    $("#ID").val(user.id);
+    $("#ID").val(user.ID);
     $("#firstname").val(user.firstName);
     $("#lastname").val(user.lastName);
     $("#username").val(user.userName);
     $("#password").val(user.password);
     $("#phone").val(user.phoneNumber);
     $("#email").val(user.email);
-    $("#reviewer").prop("checked", user.reviewer);
-    $("#admin").prop("checked", user.admin);
+    $("#reviewer").prop("checked", user.isReviewer);
+    $("#admin").prop("checked", user.isAdmin);
 }
